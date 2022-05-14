@@ -82,7 +82,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if(v == btGuardar){
-            Toast.makeText(this,turno.getDate(),Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"GUARDADO EXITOSAMENTE: " + turno.getDate(),Toast.LENGTH_LONG).show();
+            findHora.setText("");
+            findFecha.setText("");
         }
     }
 }
