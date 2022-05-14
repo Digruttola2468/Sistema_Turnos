@@ -8,37 +8,27 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class Turno implements getUI {
+public class Turno {
 
     private String fecha;
     private String hora;
+    private String nombre;
 
-    public Date formatFechaHora(){
-        try {
-            Date date = new SimpleDateFormat("dd/MM/yyyyhh:mm").parse(fecha + hora);
-            return date;
-        }catch (ParseException e){
-            Log.w("TURNO",e.getMessage());
-            return null;
-        }
-    }
-
-    public String getDate(){
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(formatFechaHora());
-        return calendar.get(calendar.DAY_OF_MONTH) + "/" +
-                (calendar.get(calendar.MONTH)+1) + "/" +
-                calendar.get(calendar.YEAR) + "   " +
-                calendar.get(calendar.HOUR_OF_DAY) + " : " + calendar.get(calendar.MINUTE);
-    }
-
-    @Override
-    public void getFechaUI(String fecha) {
+    public Turno(String nombre,String hora,String fecha){
         this.fecha = fecha;
+        this.hora = hora;
+        this.nombre = nombre;
     }
 
-    @Override
-    public void getHoraUI(String hora) {
-        this.hora = hora;
+    //GETTERS
+    public String getFecha() {
+        return fecha;
     }
+    public String getHora() {
+        return hora;
+    }
+    public String getNombre() {
+        return nombre;
+    }
+
 }

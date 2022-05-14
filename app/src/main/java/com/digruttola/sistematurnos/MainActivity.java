@@ -1,6 +1,8 @@
 package com.digruttola.sistematurnos;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -13,23 +15,17 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.digruttola.sistematurnos.Adapter.recyclerViewTurnosAdapter;
 import com.digruttola.sistematurnos.Prosecer.Turno;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-/*
-* Vista del Dentista
-* Agregar , Modificar , eliminar y leer Turnos
-*
-*
-* */
 
     private Button btFecha , btHora , btGuardar;
-    private EditText findFecha,findHora;
-
-    private int dia,mes,anio,hora,minutos;
-    private Turno turno = new Turno();
+    private EditText findFecha,findHora,findNombre;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,26 +37,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btGuardar = findViewById(R.id.bt_guardar);
         findFecha = findViewById(R.id.edt_fecha);
         findHora = findViewById(R.id.edt_hora);
+        findNombre = findViewById(R.id.edit_nombre);
+        recyclerView = findViewById(R.id.recyclerView_turnos);
+
+        findFecha.setEnabled(false);
+        findHora.setEnabled(false);
 
         btFecha.setOnClickListener(this);
         btHora.setOnClickListener(this);
         btGuardar.setOnClickListener(this);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void onClick(View v) {
         if(v == btFecha){
             final Calendar c = Calendar.getInstance();
-            dia = c.get(Calendar.DAY_OF_MONTH);
-            mes = c.get(Calendar.MONTH);
-            anio = c.get(Calendar.YEAR);
+            int dia = c.get(Calendar.DAY_OF_MONTH);
+            int mes = c.get(Calendar.MONTH);
+            int anio = c.get(Calendar.YEAR);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         findFecha.setText(dayOfMonth+"/"+(month+1)+"/"+year);
-                        turno.getFechaUI(findFecha.getText().toString());
                     }
                 },anio,mes,dia);
                 datePickerDialog.show();
@@ -68,23 +70,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(v == btHora){
             final Calendar c = Calendar.getInstance();
-            hora = c.get(Calendar.HOUR_OF_DAY);
-            minutos = c.get(Calendar.MINUTE);
+            int hora = c.get(Calendar.HOUR_OF_DAY);
+            int minutos = c.get(Calendar.MINUTE);
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     findHora.setText(hourOfDay+":"+minute);
-                    turno.getHoraUI(findHora.getText().toString());
                 }
             },hora,minutos,true);
             timePickerDialog.show();
         }
 
         if(v == btGuardar){
-            Toast.makeText(this,"GUARDADO EXITOSAMENTE: " + turno.getDate(),Toast.LENGTH_LONG).show();
+            String nombre = findNombre.getText().toString();
+            String fecha = findFecha.getText().toString();
+            String hora = findHora.getText().toString();
+
+            recyclerViewTurnosAdapter cla = new recyclerViewTurnosAdapter(new Turno(nombre,hora,fecha));
+            recyclerView.setAdapter(cla);
+
+            Toast.makeText(this,"GUARDADO EXITOSAMENTE ",Toast.LENGTH_LONG).show();
             findHora.setText("");
             findFecha.setText("");
+            findNombre.setText("");
         }
     }
 }
