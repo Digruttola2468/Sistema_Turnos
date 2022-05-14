@@ -7,15 +7,15 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.digruttola.sistematurnos.Prosecer.Turno;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 /*
@@ -25,10 +25,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 *
 * */
 
-    private Button btFecha , btHora;
+    private Button btFecha , btHora , btGuardar;
     private EditText findFecha,findHora;
-    private int dia,mes,anio,hora,minutos;
 
+    private int dia,mes,anio,hora,minutos;
+    private Turno turno = new Turno();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +38,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btFecha = findViewById(R.id.bt_Fecha);
         btHora = findViewById(R.id.bt_Hora);
+        btGuardar = findViewById(R.id.bt_guardar);
         findFecha = findViewById(R.id.edt_fecha);
         findHora = findViewById(R.id.edt_hora);
 
         btFecha.setOnClickListener(this);
         btHora.setOnClickListener(this);
+        btGuardar.setOnClickListener(this);
     }
 
     @Override
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         findFecha.setText(dayOfMonth+"/"+(month+1)+"/"+year);
+                        turno.getFechaUI(findFecha.getText().toString());
                     }
                 },anio,mes,dia);
                 datePickerDialog.show();
@@ -66,15 +70,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final Calendar c = Calendar.getInstance();
             hora = c.get(Calendar.HOUR_OF_DAY);
             minutos = c.get(Calendar.MINUTE);
-            Log.d("FECHA",hora+":"+minutos);
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     findHora.setText(hourOfDay+":"+minute);
+                    turno.getHoraUI(findHora.getText().toString());
                 }
             },hora,minutos,true);
             timePickerDialog.show();
+        }
+
+        if(v == btGuardar){
+            Toast.makeText(this,turno.getDate(),Toast.LENGTH_LONG).show();
         }
     }
 }
