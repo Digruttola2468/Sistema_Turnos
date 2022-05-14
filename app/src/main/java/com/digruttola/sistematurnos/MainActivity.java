@@ -87,13 +87,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String fecha = findFecha.getText().toString();
             String hora = findHora.getText().toString();
 
-            recyclerViewTurnosAdapter cla = new recyclerViewTurnosAdapter(new Turno(nombre,hora,fecha));
-            recyclerView.setAdapter(cla);
+            if(!nombre.equals("") && !fecha.equals("") && !hora.equals("")){
+                recyclerViewTurnosAdapter cla = new recyclerViewTurnosAdapter(new Turno(nombre,hora,fecha));
+                recyclerView.setAdapter(cla);
 
-            Toast.makeText(this,"GUARDADO EXITOSAMENTE ",Toast.LENGTH_LONG).show();
-            findHora.setText("");
-            findFecha.setText("");
-            findNombre.setText("");
+                Toast.makeText(this,"GUARDADO EXITOSAMENTE ",Toast.LENGTH_LONG).show();
+                findHora.setText("");
+                findFecha.setText("");
+                findNombre.setText("");
+            }
         }
     }
 }
