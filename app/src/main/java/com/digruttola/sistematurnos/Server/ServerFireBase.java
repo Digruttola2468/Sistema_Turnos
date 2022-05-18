@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.ContentView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.digruttola.sistematurnos.Adapter.RecyclerViewTurnosAdapter;
@@ -14,9 +15,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
@@ -81,18 +85,16 @@ public class ServerFireBase {
 
     /**
      * <b>Description: </b>Actualizar el nombre , fecha y hora del documento
-     * @param id obtener id del documento para modificar
-     * @param nombre obtener nombre a modificar
-     * @param fecha obtener fecha a modificar
-     * @param hora obtener hora a modificar*/
-    public void actualizarDocumento(Context content, String id, String nombre, String fecha, String hora){
+     * @param turno  obtener las propiedades de la clase Turno
+     * @param content obtener el activity para mostrar un Toast*/
+    public void actualizarDocumento(Context content, Turno turno){
         Map<String,String> actualizar = new HashMap<>();
 
-        actualizar.put("Nombre",nombre);
-        actualizar.put("Fecha",fecha);
-        actualizar.put("Hora",hora);
+        actualizar.put("Nombre",turno.getNombre());
+        actualizar.put("Fecha",turno.getFecha());
+        actualizar.put("Hora",turno.getHora());
 
-        db.collection("Turnos").document(id)
+        db.collection("Turnos").document(turno.getId())
                 .set(actualizar,SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -113,13 +115,13 @@ public class ServerFireBase {
      * <b>Description: </b>Eliminar un documento de Firebase
      * @param id obtener el id del documento para eliminar
      * */
-    public void deleteDocument(String id){
+    public void deleteDocument(Context context,String id){
         db.collection("Turnos").document(id)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Document Delete updated!");
+                        Toast.makeText(context,"Eliminado Correctamente",Toast.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -131,6 +133,34 @@ public class ServerFireBase {
 
     }
 
+    public void getRealTimeData(RecyclerView recyclerView){
+        db.collection("Turnos").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null){
+                    Log.e("ERROR",error.getMessage());
+                    return;
+                }
+                for (DocumentChange documents : value.getDocumentChanges()) {
+                    switch (documents.getType()){
+                        case ADDED:
+                            String nombre = (String) documents.getDocument().getData().get("Nombre");
+                            String fechas = (String) documents.getDocument().getData().get("Fecha");
+                            String hora = (String) documents.getDocument().getData().get("Hora");
+
+                            RecyclerViewTurnosAdapter adapter = new RecyclerViewTurnosAdapter(new Turno(documents.getDocument().getId(),nombre,hora,fechas));
+                            recyclerView.setAdapter(adapter);
+                            break;
+                        case MODIFIED:
+                        case REMOVED:
+                            readDocumentFireBase(recyclerView);
+                            break;
+                    }
+                }
+
+            }
+        });
+    }
 
     /***/
     public void LeerFechas(int dayOfMonth,int mounth,int year){

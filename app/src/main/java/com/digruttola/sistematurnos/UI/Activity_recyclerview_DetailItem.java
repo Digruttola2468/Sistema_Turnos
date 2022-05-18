@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.digruttola.sistematurnos.Prosecer.Turno;
 import com.digruttola.sistematurnos.R;
 import com.digruttola.sistematurnos.Server.ServerFireBase;
 
@@ -53,7 +54,7 @@ public class Activity_recyclerview_DetailItem extends AppCompatActivity {
                 String nombre = editNombre.getText().toString();
                 String fecha = editFecha.getText().toString();
                 String hora = editHora.getText().toString();
-                new ServerFireBase().actualizarDocumento(Activity_recyclerview_DetailItem.this,id,nombre,fecha,hora);
+                new ServerFireBase().actualizarDocumento(Activity_recyclerview_DetailItem.this,new Turno(id,nombre,hora,fecha));
 
             }
         });
@@ -61,7 +62,7 @@ public class Activity_recyclerview_DetailItem extends AppCompatActivity {
         btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ServerFireBase().deleteDocument(id);
+                new ServerFireBase().deleteDocument(getApplicationContext(),id);
             }
         });
 
