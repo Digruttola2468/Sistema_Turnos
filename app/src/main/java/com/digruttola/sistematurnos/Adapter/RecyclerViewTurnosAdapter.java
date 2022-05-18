@@ -1,5 +1,6 @@
 package com.digruttola.sistematurnos.Adapter;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.digruttola.sistematurnos.Prosecer.Turno;
 import com.digruttola.sistematurnos.R;
+import com.digruttola.sistematurnos.UI.Activity_recyclerview_DetailItem;
 
 import java.util.ArrayList;
 
 public class RecyclerViewTurnosAdapter extends RecyclerView.Adapter<RecyclerViewTurnosAdapter.ViewHolder> {
 
-    private ArrayList<Turno> pacientes = new ArrayList<>();
+    private static ArrayList<Turno> pacientes = new ArrayList<>();
 
     public RecyclerViewTurnosAdapter(Turno turno){
         pacientes.add(turno);
@@ -36,9 +38,22 @@ public class RecyclerViewTurnosAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.id = pacientes.get(position).getId();
         holder.asignarDatoNombre(pacientes.get(position).getNombre());
         holder.asignarDatoFecha(pacientes.get(position).getFecha());
         holder.asignarDatoHora(pacientes.get(position).getHora());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), Activity_recyclerview_DetailItem.class);
+                intent.putExtra("itemID",holder.id);
+                intent.putExtra("itemNombre",holder.txtNombre.getText());
+                intent.putExtra("itemHora",holder.txtHorario.getText());
+                intent.putExtra("itemFecha",holder.txtFecha.getText());
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -49,7 +64,7 @@ public class RecyclerViewTurnosAdapter extends RecyclerView.Adapter<RecyclerView
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtNombre,txtFecha,txtHorario;
-
+        String id;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtFecha = itemView.findViewById(R.id.txt_Fecha);

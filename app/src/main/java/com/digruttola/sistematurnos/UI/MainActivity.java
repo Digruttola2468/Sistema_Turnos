@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btNext.setOnClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         serverFireBase.readDocumentFireBase(recyclerView);
     }
 
@@ -100,10 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String hora = findHora.getText().toString();
 
             if(!nombre.equals("") && !fecha.equals("") && !hora.equals("")){
-                RecyclerViewTurnosAdapter cla = new RecyclerViewTurnosAdapter(new Turno(nombre,hora,fecha) );
-                recyclerView.setAdapter(cla);
-
-                serverFireBase.addFireBase(nombre,fecha,hora);
+                serverFireBase.addFireBase(new Turno(nombre,fecha,hora));
                 findHora.setText("");
                 findFecha.setText("");
                 findNombre.setText("");
@@ -111,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if(v == btNext){
-            Intent i = new Intent(MainActivity.this,activity_view_allturnos.class);
+            Intent i = new Intent(MainActivity.this, Activity_view_allturnos.class);
             startActivity(i);
         }
     }

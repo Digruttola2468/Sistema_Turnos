@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.activity_view_allturnos"></activity>
+        <activity android:name=".UI.Activity_view_allturnos"></activity>
+        <activity android:name=".UI.Activity_recyclerview_DetailItem"></activity>
     </application>
 
 </manifest>

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.digruttola.sistematurnos.R;
 
-public class activity_view_allturnos extends AppCompatActivity {
+public class Activity_view_allturnos extends AppCompatActivity {
 
     private CalendarView calendarView;
 
@@ -24,7 +24,7 @@ public class activity_view_allturnos extends AppCompatActivity {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                Toast.makeText(activity_view_allturnos.this, dayOfMonth + " / " + month + " / " + year,Toast.LENGTH_LONG).show();
+                Toast.makeText(Activity_view_allturnos.this, dayOfMonth + " / " + month + " / " + year,Toast.LENGTH_LONG).show();
             }
         });
 
