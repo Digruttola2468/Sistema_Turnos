@@ -1,5 +1,6 @@
 package com.digruttola.sistematurnos.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,18 @@ import com.digruttola.sistematurnos.R;
 
 import java.util.ArrayList;
 
-public class recyclerViewTurnosAdapter extends RecyclerView.Adapter<recyclerViewTurnosAdapter.ViewHolder> {
+public class RecyclerViewTurnosAdapter extends RecyclerView.Adapter<RecyclerViewTurnosAdapter.ViewHolder> {
 
-    private static ArrayList<Turno> pacientes = new ArrayList<>();
+    private ArrayList<Turno> pacientes = new ArrayList<>();
 
-    public recyclerViewTurnosAdapter(Turno turno){
+    public RecyclerViewTurnosAdapter(Turno turno){
         pacientes.add(turno);
     }
+
+    public RecyclerViewTurnosAdapter(ArrayList<Turno> pacientes){
+        this.pacientes = pacientes;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

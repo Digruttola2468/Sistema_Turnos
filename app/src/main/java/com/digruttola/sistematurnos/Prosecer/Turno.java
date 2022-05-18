@@ -20,6 +20,15 @@ public class Turno {
         this.nombre = nombre;
     }
 
+    @Override
+    public String toString() {
+        return "Turno{" +
+                "fecha='" + fecha + '\'' +
+                ", hora='" + hora + '\'' +
+                ", nombre='" + nombre + '\'' +
+                '}';
+    }
+
     //GETTERS
     public String getFecha() {
         return fecha;
