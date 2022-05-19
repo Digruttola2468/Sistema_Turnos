@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btNext.setOnClickListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        serverFireBase.readDocumentFireBase(recyclerView);
 
+        serverFireBase.readDocumentFireBase(recyclerView);
         serverFireBase.getRealTimeData(recyclerView);
     }
 

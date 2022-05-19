@@ -162,9 +162,32 @@ public class ServerFireBase {
         });
     }
 
-    /***/
-    public void LeerFechas(int dayOfMonth,int mounth,int year){
-        //TODO
+    /**<b>Descripcion:</b> Leer todos los pacientes que tengan el mismo dia/mes/año
+     * @param recyclerView mostrar el listado de los pacientes correpondiente a la fecha
+     * @param dayOfMonth Obtener el dia
+     * @param mounth Obtener el mes
+     * @param year Obtener el año*/
+    public void LeerFechas(RecyclerView recyclerView,int dayOfMonth,int mounth,int year){
+        db.collection("Turnos").whereEqualTo("Fecha",dayOfMonth+"/"+mounth+"/"+year).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null){
+                    Log.e("ERROR",error.getMessage());
+                    return;
+                }
+                ArrayList<Turno> turnos = new ArrayList<>();
+                for (QueryDocumentSnapshot document : value) {
+                    String Nombre = (String) document.getData().get("Nombre");
+                    String Fecha = (String) document.getData().get("Fecha");
+                    String Hora = (String) document.getData().get("Hora");
+                    turnos.add(new Turno(Nombre,Hora,Fecha));
+
+                }
+                RecyclerViewTurnosAdapter adapter = new RecyclerViewTurnosAdapter(turnos);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+
     }
 
 }
