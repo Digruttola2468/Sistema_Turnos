@@ -8,6 +8,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -84,9 +85,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(v == btGuardar){
             String nombre = findNombre.getText().toString();
             String fecha = findFecha.getText().toString();
+            String horario;
 
-            if(!nombre.equals("") && !fecha.equals("")){
-                serverFireBase.addFireBase(new Turno(nombre,"00:00",fecha));
+            //Verificamos si es diferente de null
+            if(sp_horarios.getSelectedItem() != null)
+                horario = sp_horarios.getSelectedItem().toString();
+            else
+                horario = "";
+
+            if(!nombre.equals("") && !fecha.equals("") && !horario.equals("")){
+                serverFireBase.addFireBase(new Turno(nombre,horario,fecha));
                 findFecha.setText("");
                 findNombre.setText("");
             }
