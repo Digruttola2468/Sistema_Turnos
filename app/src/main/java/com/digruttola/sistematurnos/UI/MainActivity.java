@@ -84,11 +84,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    if(hourOfDay > 12){ //PM
-                        if(minute > 0 && minute <= 9) findHora.setText(hourOfDay+":0"+minute);
+                    if(hourOfDay >= 10){
+                        if(minute >= 0 && minute <= 9) findHora.setText(hourOfDay+":0"+minute);
                         else findHora.setText(hourOfDay+":"+minute+" PM");
                     }else{
-                        findHora.setText(hourOfDay+":"+minute+" AM");
+                        if(minute >= 0 && minute <= 9) findHora.setText("0"+hourOfDay+":0"+minute);
+                        else findHora.setText(hourOfDay+":"+minute+" AM");
                     }
                 }
             },hora,minutos,true);
