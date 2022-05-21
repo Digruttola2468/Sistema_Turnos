@@ -2,6 +2,8 @@ package com.digruttola.sistematurnos.Server;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.ContentView;
@@ -165,6 +167,38 @@ public class ServerFireBase {
     /***/
     public void LeerFechas(int dayOfMonth,int mounth,int year){
         //TODO
+    }
+
+    /*Depende de la fecha seleccionada , vamos a obtener los horarios No seleccionados*/
+    public void getHorarios(Context context,Spinner spinner, String fecha){
+        db.collection("Turnos").whereEqualTo("Fecha",fecha).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error != null){
+                    Log.e("ERROR",error.getMessage());
+                    return;
+                }
+
+                //Horarios por defectos
+                ArrayList<String> horarios = new ArrayList<>();
+                horarios.add("12:00");horarios.add("12:30");
+                horarios.add("13:00");horarios.add("13:30");
+                horarios.add("14:00");horarios.add("14:30");
+                horarios.add("15:00");horarios.add("15:30");
+
+                for (QueryDocumentSnapshot document : value) {
+                    String hora = (String) document.getData().get("Hora");
+                    for (int i = 0; i < horarios.size(); i++) {
+                        if(hora.equals(horarios.get(i))){
+                            horarios.remove(i);
+                        }
+                    }
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,horarios);
+                spinner.setAdapter(adapter);
+            }
+        });
     }
 
 }

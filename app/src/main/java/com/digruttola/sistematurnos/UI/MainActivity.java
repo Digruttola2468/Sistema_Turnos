@@ -9,9 +9,11 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.digruttola.sistematurnos.Adapter.RecyclerViewTurnosAdapter;
@@ -19,13 +21,15 @@ import com.digruttola.sistematurnos.Prosecer.Turno;
 import com.digruttola.sistematurnos.R;
 import com.digruttola.sistematurnos.Server.ServerFireBase;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private Button btFecha , btHora , btGuardar, btNext;
-    private EditText findFecha,findHora,findNombre;
+    private Button btFecha  , btGuardar, btNext;
+    private EditText findFecha,findNombre;
     private RecyclerView recyclerView;
+    private Spinner sp_horarios;
 
     private ServerFireBase serverFireBase = new ServerFireBase();
 
@@ -35,19 +39,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         btFecha = findViewById(R.id.bt_Fecha);
-        btHora = findViewById(R.id.bt_Hora);
         btGuardar = findViewById(R.id.bt_guardar);
         btNext = findViewById(R.id.bt_next);
         findFecha = findViewById(R.id.edt_fecha);
-        findHora = findViewById(R.id.edt_hora);
         findNombre = findViewById(R.id.edit_nombre);
         recyclerView = findViewById(R.id.recyclerView_turnos);
+        sp_horarios = findViewById(R.id.sp_horarios_main);
 
         findFecha.setEnabled(false);
-        findHora.setEnabled(false);
 
         btFecha.setOnClickListener(this);
-        btHora.setOnClickListener(this);
         btGuardar.setOnClickListener(this);
         btNext.setOnClickListener(this);
 
@@ -70,40 +71,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         findFecha.setText(dayOfMonth+"/"+(month+1)+"/"+year);
+
+                        serverFireBase.getHorarios(MainActivity.this,sp_horarios,findFecha.getText().toString());
+
                     }
                 },anio,mes,dia);
                 datePickerDialog.show();
             }
         }
 
-        if(v == btHora){
-            final Calendar c = Calendar.getInstance();
-            int hora = c.get(Calendar.HOUR_OF_DAY);
-            int minutos = c.get(Calendar.MINUTE);
-
-            TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    if(hourOfDay >= 10){
-                        if(minute >= 0 && minute <= 9) findHora.setText(hourOfDay+":0"+minute);
-                        else findHora.setText(hourOfDay+":"+minute+" PM");
-                    }else{
-                        if(minute >= 0 && minute <= 9) findHora.setText("0"+hourOfDay+":0"+minute);
-                        else findHora.setText(hourOfDay+":"+minute+" AM");
-                    }
-                }
-            },hora,minutos,true);
-            timePickerDialog.show();
-        }
 
         if(v == btGuardar){
             String nombre = findNombre.getText().toString();
             String fecha = findFecha.getText().toString();
-            String hora = findHora.getText().toString();
 
-            if(!nombre.equals("") && !fecha.equals("") && !hora.equals("")){
-                serverFireBase.addFireBase(new Turno(nombre,hora,fecha));
-                findHora.setText("");
+            if(!nombre.equals("") && !fecha.equals("")){
+                serverFireBase.addFireBase(new Turno(nombre,"00:00",fecha));
                 findFecha.setText("");
                 findNombre.setText("");
             }
